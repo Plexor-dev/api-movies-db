@@ -1,0 +1,42 @@
+.category-container {
+    width: 30%;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-arrow {
+    align-self: flex-start;
+}
+
+.header-searchForm input {
+    width: 50%;
+}
+
+
+.genericList-container {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 0;
+    gap: 20px;
+  }
+
+  .genericList-container .movie-container {
+    display: flex;
+    width: 15%;
+    margin: 0;
+  }
+
+  .genericList-container .movie-img {
+    width: 100%;
+  }
+
+
+.movieDetail-container {
+  width: 100%;
+  opacity: 0.96;
+}
