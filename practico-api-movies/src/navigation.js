@@ -1,3 +1,9 @@
+let maxPage;
+
+let page = 1;
+
+let infiniteScroll;
+
 searchFormBtn.addEventListener('click', () => {
     location.hash = '#search=' + searchFormInput.value;
     });
@@ -7,19 +13,26 @@ trendingBtn.addEventListener('click', () => {
     });
 
 arrowBtn.addEventListener('click', () => {
-    //history.back(); //devuelve al resultado anterior
-    location.hash = '#home';
+    history.back(); //devuelve al resultado anterior
+    //location.hash = '#home';
     });
 
-      
+    
 
 window.addEventListener('DOMContentLoaded', navigator, false);
 window.addEventListener('hashchange', navigator, false);
+window.addEventListener('scroll', infiniteScroll, false);
+
 
 //se debe estar "escuchando" cuando el contenido cargue y cuando el contenido cambie para que se ejecute la funcion
 
 function navigator() {
-    console.log(location);
+    console.log({location});
+
+    if (infiniteScroll){
+        window.removeEventListener('scroll', infiniteScroll, {passive: false});
+        infiniteScroll = undefined;
+    }
 
     if(location.hash.startsWith('#trends')){
         trendsPage();
@@ -33,6 +46,13 @@ function navigator() {
         homePage();
     }
     window.scrollTo(0, 0);
+
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+
+    if (infiniteScroll){
+        window.addEventListener('scroll', infiniteScroll, {passive: false});
+    }
 }
 
 function homePage() {
@@ -45,6 +65,7 @@ function homePage() {
     headerCategoryTitle.classList.add('inactive');
     headerTitle.classList.remove('inactive');
     searchForm.classList.remove('inactive');
+    likedMoviesSection.classList.remove('inactive');
 
     trendingPreviewSection.classList.remove('inactive');
     categoriesPreviewSection.classList.remove('inactive');
@@ -56,6 +77,7 @@ function homePage() {
 
     getTrendingMoviesPreview();
     getCategoriesMoviesPreview();
+    getLikedMovie();
 }
 
 function categoryPage() {
@@ -68,6 +90,8 @@ function categoryPage() {
     headerCategoryTitle.classList.remove('inactive');
     headerTitle.classList.add('inactive');
     searchForm.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
+
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
@@ -82,6 +106,8 @@ function categoryPage() {
     headerCategoryTitle.innerHTML = categoryName;
 
     getMoviesbyCategory(categoryId);
+
+    infiniteScroll = getPaginatedMoviesbyCategory(categoryId);
 }
 
 function moviePage(){
@@ -94,6 +120,9 @@ function moviePage(){
     headerTitle.classList.add('inactive');
     headerCategoryTitle.classList.add('inactive');
     searchForm.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
+
+
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
@@ -117,6 +146,9 @@ function searchPage(){
     headerCategoryTitle.classList.add('inactive');
     headerTitle.classList.add('inactive');
     searchForm.classList.remove('inactive');
+    likedMoviesSection.classList.add('inactive');
+
+
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
@@ -126,6 +158,9 @@ function searchPage(){
 
     const [_, query] = location.hash.split('=') //esto va a devolver => ['#search', 'buscado']
     getMoviesBySearch(query)
+
+    infiniteScroll = getPaginatedMoviesBySearch(query);
+
 }
 
 function trendsPage(){
@@ -138,6 +173,9 @@ function trendsPage(){
     headerCategoryTitle.classList.remove('inactive');
     headerTitle.classList.add('inactive');
     searchForm.classList.add('inactive');
+    likedMoviesSection.classList.add('inactive');
+
+
 
     trendingPreviewSection.classList.add('inactive');
     categoriesPreviewSection.classList.add('inactive');
@@ -148,6 +186,8 @@ function trendsPage(){
     headerCategoryTitle.innerHTML = 'Trending';
 
     getTrendingMovies()
+
+    infiniteScroll = getPaginatedTrendingMovies;
 }
 
 //const $ = (id) => document.querySelector(id);
